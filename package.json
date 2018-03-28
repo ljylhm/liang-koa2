@@ -1,0 +1,20 @@
+{
+  "name": "koa_learn",
+  "version": "1.0.0",
+  "description": "koa learn",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "author": "liang",
+  "license": "ISC",
+  "dependencies": {
+    "formidable": "^1.1.1",
+    "koa": "^2.5.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^4.0.2",
+    "koa2-cors": "^2.0.5",
+    "koa2-formidable": "^1.0.2",
+    "mysql-pro": "^1.0.1"
+  }
+}
