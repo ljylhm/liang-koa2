@@ -4,7 +4,7 @@ let options = {
     host: 'localhost',
     port: '3306',
     user: 'root',
-    database: 'liang_learn',
+    database: 'bookstest',
     password: '123456',
 }
 
