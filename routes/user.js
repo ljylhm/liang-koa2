@@ -22,10 +22,10 @@ router.post('/isNewUser',async (ctx,next) =>{
 })
 
 // 上传头像
-router.post('/headImg', async (ctx, next) => {
+router.post('/bookImg', async (ctx, next) => {
 
     let form = new formidable.IncomingForm();
-    let res = helper.responseData,
+    let res = "",
         dirName = "/img/";
 
     form.encoding = 'utf-8';
@@ -58,8 +58,7 @@ router.post('/headImg', async (ctx, next) => {
             }
 
             if (extName.length == 0) {
-                res.code = "3000";
-                res.message = "只支持png和jpg格式图片";
+                res = new userEntity.result(2003, "只支持png和jpg格式图片", null);
                 return resolve(res)
             }
 
@@ -67,18 +66,11 @@ router.post('/headImg', async (ctx, next) => {
             let newPath = form.uploadDir + avatarName,
                 exportDir = dirName + avatarName;
 
-            // helper.upLoadQiNiu({
-            //     name:"haha.jpg",
-            //     stream:files.file._writeStream
-            // }); // 上传到七牛
-
             try {
                 await fs.renameSync(files.file.path, newPath);
-                res.code = "2000";
-                res.data = {
+                res = new userEntity.result(2000,"请求数据成功",{
                     imgUrl: helper.initAddress() + exportDir
-                }
-
+                })
                 return resolve(res)
             } catch (error) {
                 throw error;
@@ -91,11 +83,37 @@ router.post('/headImg', async (ctx, next) => {
 
     ctx.type = "json";
     ctx.body = data;
-
 })
 
-router.post("/upLoadImg",async(ctx,next) => {
+router.post("/upLoadImg", async (ctx, next) => {
+
+    let buf = [];
+    let query = ctx.request.body,
+        result = {
+            name:"Billy"
+        };
+
+    let name = query.files.file.name;
+    let readStream = fs.createReadStream(query.files.file.path); // 这个path 不造是前端的地址传到后台的地址
+   
+    let fn = await helper.upLoadQiNiu({
+        name: name,
+        stream: readStream
+    })
     
+    readStream.close(); // 关闭可读流读取
+
+    if(fn.err){
+        throw err;
+        result = new userEntity.result(2002, "插入数据失败", null)
+    }else if(fn.info.statusCode == 200){
+        result = new userEntity.result(2000, "请求数据成功", {
+            imgUrl : "http://p3s00of2j.bkt.clouddn.com/" + fn.body.key
+        }) 
+    }
+
+    ctx.type = "json";
+    ctx.body = result;
 })
 
 module.exports = router;

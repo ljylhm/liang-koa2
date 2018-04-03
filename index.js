@@ -27,6 +27,7 @@ app.use(cors({
        let origin = ctx.header.origin; 
        if(origin == "http://10.101.70.31:8080") return origin;
        else if(origin == "http://10.101.70.31:8086") return origin; 
+       else if(origin == "http://10.101.70.31:8081") return origin; 
        else if(origin == "http://10.101.70.67:8009") return origin; 
        return false;
     }

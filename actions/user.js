@@ -31,7 +31,8 @@ let addUser = async (ctx, next) => {
             } else {
                 let sqlRes = await sql.query("insert into staff values (null,?,?,?,?,?,?,?)", [user.name, user.jobNum, user.openid, user.nickName, user.photo, 1, new Date()]);
                 result = new userEntity.result(2000, "请求数据成功", {
-                    isAdd: true
+                    isAdd: true,
+                    newUserInfo:sqlRes_openid[0]
                 });
             }
         } catch (error) {

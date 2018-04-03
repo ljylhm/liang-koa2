@@ -39,8 +39,15 @@ let addBooks = async (ctx, next) => {
 let queryBooks = async (ctx, next) => {
     let query = ctx.query,
         result;
+    let keyWord = query.keyWord,
+        sqlRes = null;   
     try {
-        let sqlRes = await sql.query("select * from book where Status = 1"); // 返回还在架上的图书
+        if(!keyWord && keyWord!=0){ // 返回还在架上的图书
+            sqlRes = await sql.query("select * from book where Status = 1")
+        } else {
+            keyWord = "%"+keyWord+"%";
+            sqlRes = await sql.query("select * from book where Status = 1 and Name like ?",[keyWord])
+        }
         result = new userEntity.result(2000, "请求数据成功", {
             data: sqlRes
         });
