@@ -29,12 +29,18 @@ let addBorrowRecords = async (ctx, next) => {
     } else {
         try {
             //插入借阅记录 创建时间默认为服务器当前时间 归还时间创建时为null
-            let refid = await sql.query("select Staff_Id from borrowrecord where Book_Id  = ? order by Id desc limit 1",[borrowRecords.bookId])  // 查找当前图书的最近一次的使用人id
-             
-            refid = refid.length > 0 ? refid[0].Staff_Id : null;
-
-            let sqlRes = await sql.query("insert into borrowrecord values (null,?,?,?,?,?,?,?)", [borrowRecords.bookId, borrowRecords.staffId, refid, borrowRecords.remark, borrowRecords.clientIp, new Date(), null]);
-
+            let refid = await sql.query("select Id,Staff_Id from borrowrecord where Book_Id  = ? order by Id desc limit 1", [borrowRecords.bookId])  // 查找当前图书的最近一次的使用人id
+            let Id = "",
+                Staff_Id = "",
+                now = new Date();
+            if (refid) {
+                Id = refid[0].Id;
+                Staff_Id = refid[0].Staff_Id;
+            }
+            let sqlRes = await sql.query("insert into borrowrecord values (null,?,?,?,?,?,?,?)", [borrowRecords.bookId, borrowRecords.staffId, Staff_Id, borrowRecords.remark, borrowRecords.clientIp, new Date(), null]);
+            if (refid) {
+                let upDateReturn = await sql.query("update borrowrecord set ReturnTime=? where Id = ?", [now, Id]);
+            }
             result = new userEntity.result(2000, "请求数据成功", {
                 isAdd: true
             });
@@ -63,16 +69,17 @@ let queryBorrowBooks = async (ctx, next) => {
         result = new userEntity.result(2001, str, null)
     } else {
         try {
+
             // 查找当前用户是否是这本书的使用用户
             let sqlRes_openid = await sql.query("select OpenId from staff where Id = (SELECT Staff_Id from borrowrecord where Book_Id  = ? order by Id desc LIMIT 1)", [borrowRecords.bookId]);
-            let isOwn = sqlRes_openid == borrowRecords.openid ? true : false; 
-            
+
+            let getOpenId = sqlRes_openid.length > 0 ? sqlRes_openid[0]["OpenId"] : null;
+            let isOwn = getOpenId == borrowRecords.openid ? true : false;  // true 不能借书 false 可以
             // 查询后50条记录
-            let sqlRes_query = await sql.query("SELECT s.JobNum,s.Name,s.NickName,br.ClientIp,date_format(br.CreateAt,'%Y-%c-%d %h:%i') as CreateAt,br.Remark from staff  as s INNER JOIN (SELECT * from borrowrecord where Book_Id  = ? order by Id desc limit 50) as br WHERE s.Id = br.Staff_Id;",[borrowRecords.bookId])
-                       
+            let sqlRes_query = await sql.query("SELECT s.JobNum,s.Name,s.NickName,br.ClientIp,date_format(br.CreateAt,'%Y-%c-%d %T') as CreateAt,br.Remark from staff  as s INNER JOIN (SELECT * from borrowrecord where Book_Id  = ? order by Id desc limit 50) as br WHERE s.Id = br.Staff_Id;", [borrowRecords.bookId])
             result = new userEntity.result(2000, "请求数据成功", {
-                isOwn : isOwn, // 是否当前用户借阅这本书
-                booksRecord : sqlRes_query,
+                isOwn: isOwn, // 是否当前用户借阅这本书
+                booksRecord: sqlRes_query,
                 currentRecord: sqlRes_query.end() || null
             });
 

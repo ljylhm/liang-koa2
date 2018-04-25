@@ -60,8 +60,6 @@ let helper = {
                 }
             }
         }
-
-
         let objRes = {
             flag: flag,
             EmptyItem: EmptyItem
@@ -73,15 +71,15 @@ let helper = {
     // 登陆七牛云的凭证
     qiuNiuOpt: function (opt) {
         let returnBody = JSON.stringify({
-            "key":"$(key)",
-            "hash":"$(etag)",
-            "fsize":"$(fsize)",
-            "bucket":"$(bucket)",
-            "name":"$(x:name)"
+            "key": "$(key)",
+            "hash": "$(etag)",
+            "fsize": "$(fsize)",
+            "bucket": "$(bucket)",
+            "name": "$(x:name)"
         })
         let options = {
             scope: "liang-img", // scope 是你七牛云的仓库名 这里默认我的
-            returnBody:returnBody
+            returnBody: returnBody
         }
         options = Object.assign(options, opt);
         // 上传的凭证 下面是我的七牛云账号
@@ -97,15 +95,15 @@ let helper = {
 
     // 上传到七牛云
     upLoadQiNiu: function (opt) {
-        
-        let localFile = path.resolve(__dirname,"../public/img/1522650964.jpg") ;
+
+        let localFile = path.resolve(__dirname, "../public/img/1522650964.jpg");
 
         let config = new qiniu.conf.Config();
         config.zone = opt.zone || qiniu.zone.Zone_z0; // 默认华东的区域
         let putExtra = new qiniu.form_up.PutExtra();
         let key = opt.name;
         let token = this.qiuNiuOpt();
-    
+
         let formUploader = new qiniu.form_up.FormUploader(config);
 
         formUploader.putStream(token, key, opt.stream, putExtra, function (respErr, respBody, respInfo) {
@@ -119,14 +117,7 @@ let helper = {
                 console.log(respBody);
             }
         })
-
     },
-
-    // sql
-    sqlHelper: function (method, queryList1, table, queryList2) {
-        let str = '';
-    }
-
 }
 
 module.exports = helper;
