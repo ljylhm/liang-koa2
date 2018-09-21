@@ -20,7 +20,6 @@ let addBooks = async (ctx, next) => {
     } else {
         try {
             // 默认插入图书的时候默认状态为存在状态 1存在 0不存在 创建时间默认为服务器当前时间
-            console.log("")
             let sqlRes = await sql.query("insert into book values (null,?,?,?,?,?,?,?,?,?)", [books.name, books.imgSrc, books.desc, books.classId, books.purchaser, books.buylink, new Date(books.buydate).format("yyyy-MM-dd"), 1, new Date()]);
 
             let addData = await sql.query("select * from book where Id = (select max(id) from book)");
@@ -55,7 +54,7 @@ let queryBooks = async (ctx, next) => {
         });
     } catch (error) {
         console.log(error);
-        result = new userEntity.result(2002, "插入数据失败", null);
+        result = new userEntity.result(2002, "查询数据失败", null);
     }
     return result;
 }
@@ -80,7 +79,7 @@ let queryBooksById = async (ctx, next) => {
 
         } catch (error) {
             console.log(error);
-            result = new userEntity.result(2002, "插入数据失败", null);
+            result = new userEntity.result(2002, "查询数据失败", null);
         }
     }
     return result;
@@ -103,7 +102,7 @@ let upDateBookInfo = async (ctx, next) => {
             });
         } catch (error) {
             console.log(error);
-            result = new userEntity.result(2002, "插入数据失败", null);
+            result = new userEntity.result(2002, "更新数据失败", null);
         }
     }
     return result;
@@ -123,7 +122,7 @@ let modifyStatus = async (ctx, next) => {
             });
         } catch (error) {
             console.log(error);
-            result = new userEntity.result(2002, "插入数据失败", null);
+            result = new userEntity.result(2002, "无效图书失败", null);
         }
     }
     return result;

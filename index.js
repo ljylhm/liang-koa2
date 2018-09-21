@@ -22,16 +22,21 @@ app.use(async (ctx, next) => {
 })
 
 // 利用cors跨域
+var noCheckOrigin = [
+    "http://10.101.70.31:8080",
+    "http://10.101.70.31:8086",
+    "http://10.101.70.31:8081",
+    "http://10.101.70.67:8009",
+    "http://10.101.30.97:8009",
+    // "http://10.101.30.91:8080",
+    "http://wx.17u.cn",
+    "https://wx.17u.cn"
+]
 app.use(cors({
     origin: function (ctx) {
         let origin = ctx.header.origin;
-        if (origin == "http://10.101.70.31:8080") return origin;
-        else if (origin == "http://10.101.70.31:8086") return origin;
-        else if (origin == "http://10.101.70.31:8081") return origin;
-        else if (origin == "http://10.101.70.67:8009") return origin;
-        else if (origin == "http://wx.17u.cn") return origin;
-        else if (origin == "https://wx.17u.cn") return origin;
-        return false;
+        if (noCheckOrigin.includes(origin)) return origin;
+        else return false
     }
 }));
 

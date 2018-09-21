@@ -1,5 +1,4 @@
 // 生成guid
-
 function uuid() {
     var s = [];
     var hexDigits = "0123456789abcdef";

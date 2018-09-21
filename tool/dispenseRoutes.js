@@ -7,16 +7,16 @@ const router = require('koa-router')();
 
 let dirArr = fs.readdirSync(path.resolve('routes'));
 
-dirArr.forEach((vaule,index) => {
+dirArr.forEach((vaule, index) => {
 
-        let pureDirName = '/' + vaule.substring(0, vaule.length - 3);
-        let getRouter = require('../routes/'+vaule);
-         
-        if(pureDirName == '/index') {
-            router.use("/", getRouter.routes(), getRouter.allowedMethods())
-        }else{
-            router.use(pureDirName, getRouter.routes(), getRouter.allowedMethods())
-        }
+    let pureDirName = '/' + vaule.substring(0, vaule.length - 3);
+    let getRouter = require('../routes/' + vaule);
+
+    if (pureDirName == '/index') {
+        router.use("/", getRouter.routes(), getRouter.allowedMethods())
+    } else {
+        router.use(pureDirName, getRouter.routes(), getRouter.allowedMethods())
+    }
 
 })
 

@@ -37,10 +37,10 @@ router.post('/bookImg', async (ctx, next) => {
         form.parse(ctx.req, async function (err, fields, files) {
             // koa的回调函数里 ctx.body 调用不了？？
             let type = "";
-            console.log("传过来的file里的信息>>>>>");
-            console.log(JSON.stringify(files));
-            console.log("fields");
-            console.log(fields);
+            // console.log("传过来的file里的信息>>>>>");
+            // console.log(JSON.stringify(files));
+            // console.log("fields");
+            // console.log(fields);
             if (err) { throw err; return; }
             // 获取后缀名
             let extname = "";

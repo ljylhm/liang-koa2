@@ -111,10 +111,10 @@ let helper = {
                 throw respErr;
             }
             if (respInfo.statusCode == 200) {
-                console.log(respBody);
+                // console.log(respBody);
             } else {
-                console.log(respInfo.statusCode);
-                console.log(respBody);
+                // console.log(respInfo.statusCode);
+                // console.log(respBody);
             }
         })
     },
